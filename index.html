@@ -1,25 +1,31 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baseball Card Maker</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f5f4f0; font-family: 'Barlow', sans-serif; color: #1a1a1a; padding: 2rem; }
 
   .app {
-    font-family: 'Barlow', sans-serif;
-    color: var(--color-text-primary);
-    padding: 1.5rem 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     align-items: start;
+    max-width: 860px;
+    margin: 0 auto;
   }
 
   .panel-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 22px;
     letter-spacing: 1px;
-    color: var(--color-text-primary);
     margin-bottom: 1rem;
+    color: #1a1a1a;
   }
 
   .form-group { margin-bottom: 12px; }
@@ -30,7 +36,7 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: #666;
     margin-bottom: 4px;
   }
 
@@ -47,7 +53,7 @@
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-text-secondary);
+    color: #666;
     margin-bottom: 3px;
     text-align: center;
   }
@@ -56,92 +62,70 @@
     width: 100%;
     height: 34px;
     padding: 0 10px;
-    border: 0.5px solid var(--color-border-secondary);
-    border-radius: var(--border-radius-md);
-    background: var(--color-background-primary);
-    color: var(--color-text-primary);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1a1a;
     font-family: 'Barlow', sans-serif;
     font-size: 14px;
   }
-
   input[type="number"] { text-align: center; }
   input:focus, select:focus { outline: none; border-color: #378ADD; }
 
   .photo-upload {
     width: 100%;
     height: 90px;
-    border: 1.5px dashed var(--color-border-secondary);
-    border-radius: var(--border-radius-md);
+    border: 1.5px dashed #bbb;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background: var(--color-background-secondary);
+    background: #eee;
     transition: border-color 0.2s;
     position: relative;
     overflow: hidden;
   }
-
   .photo-upload:hover { border-color: #378ADD; }
   .photo-upload input[type="file"] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer;
-    height: 100%; width: 100%;
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%;
   }
-
   .photo-preview {
-    position: absolute; inset: 0;
-    object-fit: cover; width: 100%; height: 100%;
-    border-radius: var(--border-radius-md);
+    position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; border-radius: 6px;
   }
-
-  .upload-hint {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    text-align: center;
-    pointer-events: none;
-  }
+  .upload-hint { font-size: 12px; color: #888; text-align: center; pointer-events: none; }
   .upload-hint i { font-size: 22px; display: block; margin-bottom: 4px; }
 
-  .team-colors {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-  }
+  .team-colors { display: flex; gap: 8px; margin-top: 4px; }
   .color-option {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: transform 0.15s, border-color 0.15s;
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s;
   }
   .color-option:hover { transform: scale(1.1); }
-  .color-option.active { border-color: var(--color-text-primary); transform: scale(1.1); }
+  .color-option.active { border-color: #1a1a1a; transform: scale(1.1); }
 
   .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-secondary);
-    margin-bottom: 6px;
-    margin-top: 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #666; margin-bottom: 6px; margin-top: 14px;
   }
+
+  /* stat-type toggle */
+  .stat-type-row { display: flex; gap: 0; border: 1px solid #ccc; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+  .stat-type-btn {
+    flex: 1; height: 32px; border: none; background: #fff; color: #555;
+    font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.05em; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .stat-type-btn.active { background: #1a1a2e; color: #fff; }
+  .stat-type-btn:first-child { border-right: 1px solid #ccc; }
 
   /* ---- CARD ---- */
-  .card-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  .card-preview { display: flex; flex-direction: column; align-items: center; }
 
   .trading-card {
-    width: 280px;
-    height: 392px;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    width: 280px; height: 392px; border-radius: 12px; overflow: hidden;
+    position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.22);
     font-family: 'Barlow Condensed', sans-serif;
   }
 
@@ -154,9 +138,15 @@
 
   .card-photo-area {
     position: absolute; top: 16px; left: 0; right: 0; height: 210px;
-    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
-  .card-photo { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  /* Use a div with background-image for the card photo so crop is pixel-perfect on capture */
+  .card-photo-div {
+    width: 100%; height: 100%;
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+  }
   .card-photo-placeholder {
     width: 100%; height: 100%; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -188,15 +178,19 @@
 
   .card-stats-bar {
     position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
-    padding: 10px 12px 12px; z-index: 2;
+    padding: 6px 12px 10px; z-index: 2;
     border-top: 1px solid rgba(255,255,255,0.08);
   }
-  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; height: 100%; }
+  .stats-label-row {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); text-align: center; margin-bottom: 5px;
+  }
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
   .stat-box {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.06); border-radius: 5px; padding: 4px 2px;
+    background: rgba(255,255,255,0.06); border-radius: 5px; padding: 6px 2px 5px;
   }
-  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 22px; line-height: 1; color: #fff; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: #fff; }
   .stat-key { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 2px; }
 
   .year-badge {
@@ -207,17 +201,18 @@
 
   .download-btn {
     margin-top: 14px; height: 38px; padding: 0 24px;
-    background: transparent; border: 0.5px solid var(--color-border-secondary);
-    border-radius: var(--border-radius-md); font-family: 'Barlow', sans-serif;
-    font-size: 13px; font-weight: 500; color: var(--color-text-primary);
-    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s;
+    background: #1a1a2e; border: none;
+    border-radius: 6px; font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 600; color: #fff;
+    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.15s;
   }
-  .download-btn:hover { background: var(--color-background-secondary); }
+  .download-btn:hover { opacity: 0.85; }
 </style>
-
-<h2 class="sr-only">Baseball trading card generator — enter player info and stats to create a card</h2>
+</head>
+<body>
 
 <div class="app">
+  <!-- FORM -->
   <div class="form-panel">
     <div class="panel-title">Card Builder</div>
 
@@ -226,7 +221,7 @@
       <div class="photo-upload">
         <input type="file" accept="image/*" onchange="handlePhoto(event)">
         <div class="upload-hint" id="uploadHint">
-          <i class="ti ti-photo-up" aria-hidden="true"></i>
+          <i class="ti ti-photo-up"></i>
           Click to upload photo
         </div>
         <img id="photoPreview" class="photo-preview" style="display:none">
@@ -283,6 +278,13 @@
       <div class="team-colors" id="colorPicker"></div>
     </div>
 
+    <!-- Stat type toggle -->
+    <div class="section-label">Stats Type</div>
+    <div class="stat-type-row">
+      <button class="stat-type-btn active" id="btnSeason" onclick="setStatType('season')">Season Stats</button>
+      <button class="stat-type-btn" id="btnCareer" onclick="setStatType('career')">Career Stats</button>
+    </div>
+
     <div class="section-label">Batting Stats (from GameChanger)</div>
     <div class="stats-grid">
       <div class="stat-input-group">
@@ -320,6 +322,7 @@
     </div>
   </div>
 
+  <!-- CARD PREVIEW -->
   <div class="card-preview">
     <div class="panel-title">Preview</div>
 
@@ -329,9 +332,10 @@
       <div class="card-diagonal" id="diagBg"></div>
 
       <div class="card-photo-area">
-        <img id="cardPhoto" class="card-photo" style="display:none">
+        <!-- background-image div instead of <img> — preserves crop on html2canvas -->
+        <div id="cardPhotoBg" class="card-photo-div" style="display:none"></div>
         <div class="card-photo-placeholder" id="cardPhotoPlaceholder">
-          <i class="ti ti-user" aria-hidden="true"></i>
+          <i class="ti ti-user"></i>
           Upload player photo
         </div>
       </div>
@@ -350,12 +354,13 @@
       <div class="year-badge" id="cardYear">2025</div>
 
       <div class="card-stats-bar">
+        <div class="stats-label-row" id="statsLabel">2025 SEASON STATS</div>
         <div class="stats-row" id="statsRow"></div>
       </div>
     </div>
 
     <button class="download-btn" onclick="downloadCard()">
-      <i class="ti ti-download" aria-hidden="true"></i>
+      <i class="ti ti-download"></i>
       Download Card
     </button>
   </div>
@@ -375,6 +380,7 @@ const COLORS = [
 
 let selectedColor = 0;
 let photoDataURL = null;
+let statType = 'season'; // 'season' or 'career'
 
 function buildColorPicker() {
   const el = document.getElementById('colorPicker');
@@ -391,6 +397,13 @@ function buildColorPicker() {
     };
     el.appendChild(btn);
   });
+}
+
+function setStatType(type) {
+  statType = type;
+  document.getElementById('btnSeason').classList.toggle('active', type === 'season');
+  document.getElementById('btnCareer').classList.toggle('active', type === 'career');
+  updateCard();
 }
 
 function handlePhoto(e) {
@@ -433,9 +446,19 @@ function updateCard() {
   document.getElementById('cardNumBadge').textContent = num ? '#' + num : '';
   document.getElementById('cardYear').textContent  = yr;
 
+  // Stats label on card
+  const labelEl = document.getElementById('statsLabel');
+  if (statType === 'career') {
+    labelEl.textContent = 'CAREER STATS';
+  } else {
+    labelEl.textContent = yr ? yr + ' SEASON STATS' : 'SEASON STATS';
+  }
+
+  // Photo — use background-image on a div so crop is preserved by html2canvas
   if (photoDataURL) {
-    document.getElementById('cardPhoto').src           = photoDataURL;
-    document.getElementById('cardPhoto').style.display = 'block';
+    const bg = document.getElementById('cardPhotoBg');
+    bg.style.backgroundImage = `url('${photoDataURL}')`;
+    bg.style.display = 'block';
     document.getElementById('cardPhotoPlaceholder').style.display = 'none';
   }
 
@@ -459,7 +482,17 @@ function downloadCard() {
   const script = document.createElement('script');
   script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
   script.onload = () => {
-    html2canvas(document.getElementById('tradingCard'), { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
+    const card = document.getElementById('tradingCard');
+    html2canvas(card, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      // Tell html2canvas to render background-image on divs
+      onclone: (doc) => {
+        // nothing extra needed — background-image renders correctly in html2canvas
+      }
+    }).then(canvas => {
       const a = document.createElement('a');
       const fn = document.getElementById('firstName').value || 'player';
       const ln = document.getElementById('lastName').value  || 'card';
@@ -474,3 +507,5 @@ function downloadCard() {
 buildColorPicker();
 updateCard();
 </script>
+</body>
+</html>
