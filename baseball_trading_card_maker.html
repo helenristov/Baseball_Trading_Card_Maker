@@ -1,0 +1,476 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .app {
+    font-family: 'Barlow', sans-serif;
+    color: var(--color-text-primary);
+    padding: 1.5rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+  }
+
+  .form-group { margin-bottom: 12px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .stat-input-group { display: flex; flex-direction: column; }
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 3px;
+    text-align: center;
+  }
+
+  input, select {
+    width: 100%;
+    height: 34px;
+    padding: 0 10px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+  }
+
+  input[type="number"] { text-align: center; }
+  input:focus, select:focus { outline: none; border-color: #378ADD; }
+
+  .photo-upload {
+    width: 100%;
+    height: 90px;
+    border: 1.5px dashed var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--color-background-secondary);
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-upload:hover { border-color: #378ADD; }
+  .photo-upload input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    height: 100%; width: 100%;
+  }
+
+  .photo-preview {
+    position: absolute; inset: 0;
+    object-fit: cover; width: 100%; height: 100%;
+    border-radius: var(--border-radius-md);
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    pointer-events: none;
+  }
+  .upload-hint i { font-size: 22px; display: block; margin-bottom: 4px; }
+
+  .team-colors {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .color-option {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .color-option:hover { transform: scale(1.1); }
+  .color-option.active { border-color: var(--color-text-primary); transform: scale(1.1); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  /* ---- CARD ---- */
+  .card-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .trading-card {
+    width: 280px;
+    height: 392px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .card-bg { position: absolute; inset: 0; background: #0f1923; }
+  .card-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 6px; }
+  .card-diagonal {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 52%;
+    clip-path: polygon(0 30%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  .card-photo-area {
+    position: absolute; top: 16px; left: 0; right: 0; height: 210px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .card-photo { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .card-photo-placeholder {
+    width: 100%; height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.25); font-size: 13px; gap: 8px;
+  }
+  .card-photo-placeholder i { font-size: 40px; }
+
+  .card-number {
+    position: absolute; top: 10px; left: 12px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 42px; line-height: 1;
+    opacity: 0.12; color: #fff; letter-spacing: -1px;
+  }
+  .card-team-logo {
+    position: absolute; top: 10px; right: 12px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 11px;
+    letter-spacing: 2px; color: rgba(255,255,255,0.6); text-align: right;
+  }
+
+  .card-info {
+    position: absolute; bottom: 108px; left: 0; right: 0; padding: 0 14px; z-index: 2;
+  }
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 34px; line-height: 1;
+    color: #fff; letter-spacing: 1px; text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .card-position-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .card-position { font-size: 13px; font-weight: 600; letter-spacing: 0.15em; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+  .card-number-badge { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; padding: 1px 8px; border-radius: 3px; color: #fff; }
+
+  .card-stats-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
+    padding: 10px 12px 12px; z-index: 2;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; height: 100%; }
+  .stat-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.06); border-radius: 5px; padding: 4px 2px;
+  }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 22px; line-height: 1; color: #fff; }
+  .stat-key { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+  .year-badge {
+    position: absolute; bottom: 108px; right: 14px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+    letter-spacing: 2px; color: rgba(255,255,255,0.35); z-index: 2;
+  }
+
+  .download-btn {
+    margin-top: 14px; height: 38px; padding: 0 24px;
+    background: transparent; border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md); font-family: 'Barlow', sans-serif;
+    font-size: 13px; font-weight: 500; color: var(--color-text-primary);
+    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s;
+  }
+  .download-btn:hover { background: var(--color-background-secondary); }
+</style>
+
+<h2 class="sr-only">Baseball trading card generator — enter player info and stats to create a card</h2>
+
+<div class="app">
+  <div class="form-panel">
+    <div class="panel-title">Card Builder</div>
+
+    <div class="form-group">
+      <label class="form-label">Player Photo</label>
+      <div class="photo-upload">
+        <input type="file" accept="image/*" onchange="handlePhoto(event)">
+        <div class="upload-hint" id="uploadHint">
+          <i class="ti ti-photo-up" aria-hidden="true"></i>
+          Click to upload photo
+        </div>
+        <img id="photoPreview" class="photo-preview" style="display:none">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input type="text" id="firstName" value="Jake" oninput="updateCard()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input type="text" id="lastName" value="Rivera" oninput="updateCard()">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Position</label>
+        <select id="position" onchange="updateCard()">
+          <option>Pitcher</option>
+          <option selected>Shortstop</option>
+          <option>Catcher</option>
+          <option>First Base</option>
+          <option>Second Base</option>
+          <option>Third Base</option>
+          <option>Left Field</option>
+          <option>Center Field</option>
+          <option>Right Field</option>
+          <option>DH</option>
+          <option>Utility</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jersey #</label>
+        <input type="text" id="jerseyNum" value="7" oninput="updateCard()">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Team Name</label>
+        <input type="text" id="teamName" value="Northshore Cubs" oninput="updateCard()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Season Year</label>
+        <input type="text" id="year" value="2025" oninput="updateCard()">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="section-label">Team Color</div>
+      <div class="team-colors" id="colorPicker"></div>
+    </div>
+
+    <div class="section-label">Batting Stats (from GameChanger)</div>
+    <div class="stats-grid">
+      <div class="stat-input-group">
+        <div class="stat-label">AVG</div>
+        <input type="text" id="avg" value=".342" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">SLG</div>
+        <input type="text" id="slg" value=".521" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">RBI</div>
+        <input type="number" id="rbi" value="21" min="0" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">H</div>
+        <input type="number" id="hits" value="38" min="0" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">R</div>
+        <input type="number" id="runs" value="24" min="0" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">SB</div>
+        <input type="number" id="sb" value="11" min="0" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">OBP</div>
+        <input type="text" id="obp" value=".410" oninput="updateCard()">
+      </div>
+      <div class="stat-input-group">
+        <div class="stat-label">HR</div>
+        <input type="number" id="hr" value="4" min="0" oninput="updateCard()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-preview">
+    <div class="panel-title">Preview</div>
+
+    <div class="trading-card" id="tradingCard">
+      <div class="card-bg"></div>
+      <div class="card-accent-bar" id="accentBar"></div>
+      <div class="card-diagonal" id="diagBg"></div>
+
+      <div class="card-photo-area">
+        <img id="cardPhoto" class="card-photo" style="display:none">
+        <div class="card-photo-placeholder" id="cardPhotoPlaceholder">
+          <i class="ti ti-user" aria-hidden="true"></i>
+          Upload player photo
+        </div>
+      </div>
+
+      <div class="card-number" id="cardBgNum">7</div>
+      <div class="card-team-logo" id="cardTeam">NORTHSHORE<br>CUBS</div>
+
+      <div class="card-info">
+        <div class="card-name" id="cardName">JAKE RIVERA</div>
+        <div class="card-position-row">
+          <div class="card-position" id="cardPos">Shortstop</div>
+          <div class="card-number-badge" id="cardNumBadge">#7</div>
+        </div>
+      </div>
+
+      <div class="year-badge" id="cardYear">2025</div>
+
+      <div class="card-stats-bar">
+        <div class="stats-row" id="statsRow"></div>
+      </div>
+    </div>
+
+    <button class="download-btn" onclick="downloadCard()">
+      <i class="ti ti-download" aria-hidden="true"></i>
+      Download Card
+    </button>
+  </div>
+</div>
+
+<script>
+const COLORS = [
+  { name:'Navy',   accent:'#1B4F8A', diag:'#0d2d50' },
+  { name:'Red',    accent:'#C8102E', diag:'#7a0a1c' },
+  { name:'Forest', accent:'#1a5c2e', diag:'#0d3318' },
+  { name:'Purple', accent:'#5c2d91', diag:'#311856' },
+  { name:'Gold',   accent:'#e8a020', diag:'#8a5500' },
+  { name:'Maroon', accent:'#7a1f2e', diag:'#3d0e17' },
+  { name:'Teal',   accent:'#0e7a7a', diag:'#044040' },
+  { name:'Black',  accent:'#2a2a2a', diag:'#111'    },
+];
+
+let selectedColor = 0;
+let photoDataURL = null;
+
+function buildColorPicker() {
+  const el = document.getElementById('colorPicker');
+  COLORS.forEach((c, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'color-option' + (i === 0 ? ' active' : '');
+    btn.style.background = c.accent;
+    btn.title = c.name;
+    btn.onclick = () => {
+      document.querySelectorAll('.color-option').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedColor = i;
+      updateCard();
+    };
+    el.appendChild(btn);
+  });
+}
+
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    photoDataURL = ev.target.result;
+    document.getElementById('photoPreview').src = photoDataURL;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('uploadHint').style.display = 'none';
+    updateCard();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateCard() {
+  const fn   = document.getElementById('firstName').value || '';
+  const ln   = document.getElementById('lastName').value  || '';
+  const pos  = document.getElementById('position').value  || '';
+  const num  = document.getElementById('jerseyNum').value || '';
+  const team = document.getElementById('teamName').value.toUpperCase() || '';
+  const yr   = document.getElementById('year').value      || '';
+  const avg  = document.getElementById('avg').value  || '—';
+  const slg  = document.getElementById('slg').value  || '—';
+  const rbi  = document.getElementById('rbi').value  || '0';
+  const hits = document.getElementById('hits').value || '0';
+  const runs = document.getElementById('runs').value || '0';
+
+  const c = COLORS[selectedColor];
+  document.getElementById('accentBar').style.background    = c.accent;
+  document.getElementById('diagBg').style.background       = c.diag;
+  document.getElementById('cardNumBadge').style.background = c.accent;
+  document.getElementById('cardNumBadge').style.color      = '#fff';
+
+  document.getElementById('cardBgNum').textContent = num;
+  document.getElementById('cardTeam').innerHTML    = team.replace(' ', '<br>');
+  document.getElementById('cardName').textContent  = (fn + ' ' + ln).toUpperCase().trim() || 'PLAYER NAME';
+  document.getElementById('cardPos').textContent   = pos;
+  document.getElementById('cardNumBadge').textContent = num ? '#' + num : '';
+  document.getElementById('cardYear').textContent  = yr;
+
+  if (photoDataURL) {
+    document.getElementById('cardPhoto').src           = photoDataURL;
+    document.getElementById('cardPhoto').style.display = 'block';
+    document.getElementById('cardPhotoPlaceholder').style.display = 'none';
+  }
+
+  const stats = [
+    { k: 'AVG', v: avg },
+    { k: 'SLG', v: slg },
+    { k: 'RBI', v: rbi },
+    { k: 'H',   v: hits },
+    { k: 'R',   v: runs },
+  ];
+
+  document.getElementById('statsRow').innerHTML = stats.map(s => `
+    <div class="stat-box">
+      <div class="stat-value">${s.v}</div>
+      <div class="stat-key">${s.k}</div>
+    </div>
+  `).join('');
+}
+
+function downloadCard() {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  script.onload = () => {
+    html2canvas(document.getElementById('tradingCard'), { scale: 3, useCORS: true, backgroundColor: null }).then(canvas => {
+      const a = document.createElement('a');
+      const fn = document.getElementById('firstName').value || 'player';
+      const ln = document.getElementById('lastName').value  || 'card';
+      a.download = `${fn}_${ln}_card.png`.toLowerCase().replace(/\s+/g, '_');
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  };
+  document.head.appendChild(script);
+}
+
+buildColorPicker();
+updateCard();
+</script>
